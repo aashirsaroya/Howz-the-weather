@@ -1,44 +1,17 @@
 const request = require('request')
 
-// const url = 'http://api.weatherstack.com/current?access_key=b97d3b0d6d9965c0399bf72896d0f5dd&query=17.74239,83.333488'
+const forecast = (latitude, longitude, callback) => {
+    const url = 'https://api.darksky.net/forecast/9d1465c6f3bb7a6c71944bdd8548d026/' + latitude + ',' + longitude
 
-// request({url: url, json: true}, (error, response) => {
-//   if(error)
-//   {
-//        console.log('Unable to connect to weather service!')
-//   }
-//   else if(response.body.error){
-//     console.log('Unable to find location')
-
-//   }
-//   else{
-//     console.log('It is currently ' + response.body.current.temperature +". It feels like "+ response.body.current.feelslike + " out")
-//     console.log(response.body.current.temperature)
-//     console.log(response.body.current.weather_descriptions[0])
-//   }
-// })
-
-
-const forecast = (latitude,longitude,callback) => {
-    const url = 'http://api.weatherstack.com/current?access_key=b97d3b0d6d9965c0399bf72896d0f5dd&query='+latitude+','+longitude
-  request({url,json: true},(error, {body}) => {
-      if(error)
-      {
-        callback('Unable to connect to weather service!',undefined)
-      }
-      else if(body.error)
-      {
-        callback('Unable to find location',undefined)       
-    }
-      else
-      {
-
-        callback(undefined,'It is currently ' + body.current.temperature +". It feels like "+ body.current.feelslike + " outside")
-        // console.log('It is currently ' + response.body.current.temperature +". It feels like "+ response.body.current.feelslike + " out")
-        // console.log(response.body.current.temperature)
-        // console.log(response.body.current.weather_descriptions[0])
-      }
-  })
+    request({ url, json: true }, (error, { body }) => {
+        if (error) {
+            callback('Unable to connect to weather service!', undefined)
+        } else if (body.error) {
+            callback('Unable to find location', undefined)
+        } else {
+            callback(undefined, body.daily.data[0].summary + ' It is currently ' + body.currently.temperature + ' degress out. There is a ' + body.currently.precipProbability + '% chance of rain.')
+        }
+    })
 }
 
 module.exports = forecast
